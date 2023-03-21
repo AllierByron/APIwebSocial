@@ -21,6 +21,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'descripcion',
+        'estado',
+        'fecha_nac',
+        'bool_18',
+        'facebook',
+        'twitter',
+        'instagram',
+        'telefono',
+        'foto_perfil',
+        'password'
     ];
 
     /**
@@ -41,4 +51,25 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+
+
+
+    //relaciones muchos : 1
+    public function forums(){
+        return $this->hasMany(forum::class);
+    }
+    public function publications(){
+        return $this->hasMany(publication::class);
+    }
+    public function comments(){
+        return $this->hasMany(comment::class);
+    }
+    public function user_forums(){
+        return $this->hasMany(user_forum::class);
+    }
+    public function admins(){
+        return $this->hasOne(admin::class);
+    }
 }
