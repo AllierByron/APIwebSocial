@@ -23,7 +23,8 @@ class ForumController extends Controller
             case 1:
                 $forums = forum::select('id','nombre','descripcion')->where('estado','Activo')->get();
                 // dd($forums);
-                return view('Exteriores/explorar')->with('foros', $forums);
+                // return view('Exteriores/explorar')->with('foros', $forums);
+                return response()->json(['foros'=>$forums]);
                 break;
             case 2:
                 $forums = forum::select('id','nombre','descripcion')->where('user_id',auth()->id())->where('estado','Activo')->get();
@@ -42,7 +43,9 @@ class ForumController extends Controller
 
                 $forums = json_encode($temp);
 
-                return $forums;
+                // return $forums;
+                return response()->json(['foros'=>$forums]);
+
                 break;
             default:
                 return "";

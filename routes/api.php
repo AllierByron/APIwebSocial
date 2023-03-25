@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\PublicationController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ForumController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,3 +32,10 @@ Route::post('/eraseUser/{id}/{user_id}',[UserController::class, 'destroy']);//no
 
 Route::get('/getPubs', [PublicationController::class, 'index']);
 Route::post('/createPub/{user_id}', [PublicationController::class, 'create']);
+Route::get('/showPubs/{id}/{forum_id}/{user_id}', [PublicationController::class, 'show']);
+
+
+Route::post('/crComment/{id}/{pub_id}/{user_id}', [CommentController::class, 'create']);
+Route::post('/upComment/{id}/{com_id}', [CommentController::class, 'update']);
+
+Route::get('/getAllForums', [ForumController::class, 'index']);

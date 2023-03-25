@@ -35,14 +35,14 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($id, $pub_id, Request $request)
+    public function create($id, $pub_id, $user_id,  Request $request)
     {
         //
         switch ($id) {
             //caso no.1 es para crear likes, if para crearlo y else por si ya existe el registro y solo se necesita
             //cambiar el estado del like de false a true
             case 1:
-                $comment = Comment::where('user_id', auth()->id())
+                $comment = Comment::where('user_id',$user_id)
                                     ->where('estado', 'Activo')
                                     ->where('publication_id',$pub_id)
                                     ->first();
@@ -50,35 +50,41 @@ class CommentController extends Controller
                 if(!$comment){
                     $like = comment::create([
                         'publication_id'=> $pub_id,
-                        'user_id'=> auth()->id(),
+                        'user_id'=> $user_id,
                         'like'=>true,
                         'estado'=>'Activo'
                     ]);
                     $like = json_decode($like);
-                    $ruta = asset('upComment/2/'.$like->id);
-                    return $ruta;
+                    $ruta = asset('api/upComment/2/'.$like->id);
+                    // return $ruta;
+                    //estas respuestas devuelven la ruta necesaria para realizar la accion contraria a la que se establecio
+                    //esto es: si se acaba de registrar un comentario, se devuelve la ruta para desactivarlo
+                    return response()->json(['ruta'=>$ruta]);
                 }else{
-                   return json_encode(CommentController::update(1, json_decode($comment)));
+                //    return json_encode(CommentController::update(1, json_decode($comment)));
+                    return response()->json(['ruta'=>CommentController::update(1, json_decode($comment))]);
                 }
                 break;
             //caso 2 es para crear comentarios
             case 2:
-                $comment = Comment::where('user_id', auth()->id())
+                $comment = Comment::where('user_id', $user_id)
                                     ->where('estado', 'Activo')
                                     ->where('publication_id',$pub_id)
                                     ->first();
                 if(!$comment){
                     $comm = comment::create([
                         'publication_id'=> $pub_id,
-                        'user_id'=> auth()->id(),
+                        'user_id'=> $user_id,
                         'like'=>false,
-                        'contenido'=> '@'.auth()->id().'-yml3xftx9(89)pop/v3'.$request->input('comment'),
+                        'contenido'=> '@'.$user_id.'-yml3xftx9(89)pop/v3'.$request->input('comment'),
                         'estado'=>'Activo',
                     ]);
-                    return redirect()->route('pub',['id'=>$pub_id]);
+                    // return redirect()->route('pub',['id'=>$pub_id]);
+                    return response()->json(['id'=>$pub_id]);
                 }else{
                     CommentController::update(3, json_decode($comment), $request);
-                    return redirect()->route('pub',['id'=>$pub_id]);
+                    // return redirect()->route('pub',['id'=>$pub_id]);
+                    return response()->json(['id'=>$pub_id]);
                 }
                 break;
             default:
@@ -132,7 +138,8 @@ class CommentController extends Controller
                 }
 
 
-                return $comments;
+                // return $comments;
+                return response()->json(['comments'=>$comments]);
                 break;
             
             default:
@@ -172,7 +179,7 @@ class CommentController extends Controller
                 $comment->save();
                 $ruta = comment::select('publication_id')->where('id',$com_id->id)->get();
                 $ruta = json_decode($ruta);
-                $ruta[0]->url = asset('upComment/2/'.$comment->id);
+                $ruta[0]->url = asset('api/upComment/2/'.$comment->id);
                 // json_encode($ruta);
                 return $ruta;
 
@@ -181,9 +188,9 @@ class CommentController extends Controller
                 $comment = comment::find($com_id);
                 $comment->like = false;
                 $comment->save();
-                $ruta = comment::select('publication_id')->where('id',$com_id)->get();
+                $ruta = comment::select('api/publication_id')->where('id',$com_id)->get();
                 $ruta = json_decode($ruta);
-                $ruta[0]->url = asset('crComment/1/'.$comment->publication_id);
+                $ruta[0]->url = asset('api/crComment/1/'.$comment->publication_id);
                 json_encode($ruta);
                 return $ruta;
                 // return "asset('crear/1/".$comment->publication_id."')";

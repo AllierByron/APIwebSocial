@@ -61,7 +61,7 @@ class PublicationController extends Controller
     public function create(Request $request, $user_id)
     {
         // dd(count($request->file('content')));
-        dd($request->file('content'));
+        // dd($request->file('content'));
         $pub = publication::create([
             'titulo'=>$request->input('postName'),
             'descripcion'=>$request->input('postDesc'),
@@ -164,7 +164,8 @@ class PublicationController extends Controller
 
                     // dd(session('data'));
                     // return redirect()->route('forum');
-                    return view('layouts/comunidad');
+                    // return view('layouts/comunidad');
+                    return response()->json(['data'=>$pubs,'forum'=> $forum]);
                 }
 
                 break;
@@ -193,7 +194,8 @@ class PublicationController extends Controller
                         }
                         $deta->url = asset('/forum/2/'.$deta->forum_id);
                     }
-                    return $datos;
+                    // return $datos;
+                    return response()->json(['datos'=>$datos]);
                     // dd(session('data'));
                 }else{
                     return '';
