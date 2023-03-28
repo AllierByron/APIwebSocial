@@ -23,6 +23,8 @@ class UserController extends Controller
         //
         $usuarios = User::all();
         return response()->json(['usuarios'=>$usuarios]);
+        // return $usuarios;
+        // dd($usuarios);
     }
 
     /**
