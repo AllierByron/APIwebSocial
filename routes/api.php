@@ -23,9 +23,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::post('/registro/{id}',[UserController::class, 'create']);
-Route::get('/mostrarAllUsers',[UserController::class, 'index']);
-Route::post('/showUserPubs/{id}',[UserController::class, 'show']);
+Route::post('/createUser/{id}',[UserController::class, 'create']);
+Route::middleware('auth:sanctum')->get('/mostrarAllUsers',[UserController::class, 'index']);
+Route::post ('/showUserPubs/{id}',[UserController::class, 'show']);
 Route::post('/updateUser/{id}/{user_id}',[UserController::class, 'update']);
 Route::post('/eraseUser/{id}/{user_id}',[UserController::class, 'destroy']);//no borra fisicamente, solo logicamente
 

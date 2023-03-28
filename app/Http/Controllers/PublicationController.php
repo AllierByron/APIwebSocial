@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Http;
 use App\Models\forum;
 use Laravel\Sail\Console\PublishCommand;
 use Illuminate\Http\Request;
+use App\Models\User;
+
 
 
 class PublicationController extends Controller
@@ -170,6 +172,8 @@ class PublicationController extends Controller
 
                 break;
             case 3:
+                $img = user::where('estado', 'Activo')
+                             ->where('id', $user_id)->get();
                 $pubs = publication::where('publications.user_id',$user_id)
                                     ->where('publications.estado', 'Activo')
                                     ->join('forums','forums.id','=','publications.forum_id')
@@ -177,9 +181,13 @@ class PublicationController extends Controller
                                     ->select('publications.*','forums.nombre','users.name','users.foto_perfil')
                                     ->get();
 
+                                    // return $pubs;
+                                    $datos = json_decode($pubs);
+                                    $imgs2 = json_decode($img);
+                                    $imageURL = asset('img/'.$imgs2[0]->foto_perfil);
                 if($pubs){
-                    $datos = json_decode($pubs);
-                    
+                    // $datos = json_decode($pubs);
+                    // $imageURL = asset('img/posts/'.$datos[0]->foto_perfil);
                     foreach ($datos as $deta) {
                         $contenido = explode('/',$deta->contenido);
                         // echo $contenido[0];
@@ -195,10 +203,10 @@ class PublicationController extends Controller
                         $deta->url = asset('/forum/2/'.$deta->forum_id);
                     }
                     // return $datos;
-                    return response()->json(['datos'=>$datos]);
+                return response()->json(['datos'=>$datos,'avatar'=>$imageURL]);
                     // dd(session('data'));
                 }else{
-                    return '';
+                    return response()->json(['datos'=>'', 'avatar'=>$imageURL]);
                 }   
                 // dd(session('data'));
 

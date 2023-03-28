@@ -59,7 +59,15 @@ class UserController extends Controller
                     // Auth::login($user);
                     
                     //esta devolucion es importante porque es la forma en la que autenticamos al usuario, e inciamos su sesion
-                    return response()->json(['insertado'=>user::where('email', $request->input('correo-InS'))->get()]);
+                    $imageURL = asset('img/'.$user->foto_perfil);
+                    
+                    $token = $user->createToken('auth_token')->plainTextToken; 
+                    $user_token = $user->getAuthIdentifier();
+
+                    return response()->json(['insertado'=>user::where('email', $request->input('correo-InS'))->get(), 
+                                             'token'=>$token,
+                                             'user_token'=>$user_token,
+                                             'avatar'=>$imageURL]);
                 }else{
                     return response()->json(['error'=>'Ya existe una cuenta con ese correo']);
                 }
@@ -147,7 +155,7 @@ class UserController extends Controller
                 $user = User::where('email', $request->input('correo-InS'))
                             // ->where('password',$request->input('password-InS'))
                             ->where('estado','Activo')->first();
-
+                $imageURL = asset('img/'.$user->foto_perfil);
                 // return response()->json(['test'=>$user]);
                 $enter = false;
                 if(Hash::check($request->input('password-InS'), $user->password)){
@@ -155,14 +163,20 @@ class UserController extends Controller
                 }else if($request->input('password-InS') == $user->password){
                     $enter = true;
                 }
-
                 if($enter){
                     // Auth::login($user);
-
+                    $user_token = $user->getAuthIdentifier();
+                    // return response()->json(['prueba'=>$user_token]);
                     // return redirect()->route('obtainPosts',['id'=>3]);
                     $publications = new PublicationController();
+                    // return response()->json(['prueba'=>json_decode($user)]);
                     $pubs = $publications->show(3, 0, $user->id);
-                    return response()->json(['publicaciones'=> $pubs]);
+                    // return response()->json(['prueba'=>$pubs]);
+                    
+                    $token = $user->createToken('auth_token')->plainTextToken;
+                    
+                    return response()->json(['publicaciones'=> $pubs, 'user_token'=>$user_token, 'avatar'=>$imageURL, 'token'=>$token]);
+                    // return response()->json(['publicaciones'=> 'nose']);
 
                 }else{
                     // echo "no existe";
