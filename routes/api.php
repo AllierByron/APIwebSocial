@@ -25,17 +25,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/createUser/{id}',[UserController::class, 'create']);
 Route::middleware('auth:sanctum')->get('/mostrarAllUsers',[UserController::class, 'index']);
-Route::post ('/showUserPubs/{id}',[UserController::class, 'show']);
-Route::post('/updateUser/{id}/{user_id}',[UserController::class, 'update']);
+Route::post('/showUserPubs/{id}',[UserController::class, 'show']);
+Route::middleware('auth:sanctum')->post('/updateUser/{id}/{user_id}',[UserController::class, 'update']);
 Route::post('/eraseUser/{id}/{user_id}',[UserController::class, 'destroy']);//no borra fisicamente, solo logicamente
 
 
 Route::get('/getPubs', [PublicationController::class, 'index']);
 Route::post('/createPub/{user_id}', [PublicationController::class, 'create']);
-Route::get('/showPubs/{id}/{forum_id}/{user_id}', [PublicationController::class, 'show']);
+Route::middleware('auth:sanctum')->get('/showPubs/{id}/{forum_id}/{user_id}', [PublicationController::class, 'show']);
 
 
 Route::post('/crComment/{id}/{pub_id}/{user_id}', [CommentController::class, 'create']);
 Route::post('/upComment/{id}/{com_id}', [CommentController::class, 'update']);
 
 Route::get('/getAllForums', [ForumController::class, 'index']);
+

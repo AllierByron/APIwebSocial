@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+// Route::get('/lejos',function(){
+//     return redirect()->away('http://localhost:8080/usuario/perfil')->with('error','Usuario no encontrado');
+// })->name('lejos');
